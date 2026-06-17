@@ -1,0 +1,10 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <defs><clipPath id="fc"><circle cx="24" cy="24" r="18"/></clipPath></defs>
+  <circle cx="24" cy="24" r="22" fill="#f0fdf4" stroke="#e2e8f0" stroke-width="0.5"/>
+  <circle cx="24" cy="24" r="18" fill="#dbeafe"/>
+  <ellipse cx="22" cy="22" rx="5" ry="7" fill="#16a34a" opacity="0.75" clip-path="url(#fc)"/>
+  <ellipse cx="29" cy="27" rx="4" ry="5" fill="#16a34a" opacity="0.6" clip-path="url(#fc)"/>
+  <circle cx="24" cy="24" r="18" fill="none" stroke="#93c5fd" stroke-width="0.5"/>
+  <ellipse cx="24" cy="24" rx="23" ry="8" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>
+  <circle cx="47" cy="24" r="3" fill="#16a34a"/>
+</svg>
