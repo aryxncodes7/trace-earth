@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent, type MouseEvent } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import {
   Download,
@@ -30,6 +30,18 @@ import OffsetCard, { OFFSET_PROJECTS } from './components/OffsetCard.js';
 import AIInsightCard from './components/AIInsightCard.js';
 import GlobalEmissionsCounter from './components/GlobalEmissionsCounter.js';
 import { Toaster, toast } from 'sonner';
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const NAME_PATTERN = /^[a-zA-Z][a-zA-Z\s'.-]{1,79}$/;
+
+const normalizeText = (value: string) => value.trim().replace(/\s+/g, ' ');
+
+const getPasswordError = (password: string) => {
+  if (!password) return 'Please enter a password';
+  if (password.length < 8) return 'Password must be at least 8 characters';
+  if (password.length > 128) return 'Password must be 128 characters or less';
+  return null;
+};
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -138,7 +150,7 @@ export default function App() {
     setShowSplash(false);
   };
 
-  const handleOAuthLogin = (e: React.MouseEvent, provider: 'google' | 'github') => {
+  const handleOAuthLogin = (e: MouseEvent, provider: 'google' | 'github') => {
     e.preventDefault();
     setAuthLoading(true);
 
@@ -167,7 +179,7 @@ export default function App() {
     }, 1000);
   };
 
-  const handleSimulateLogin = async (e: React.FormEvent, provider: 'google' | 'github' | 'guest' | 'email') => {
+  const handleSimulateLogin = async (e: FormEvent, provider: 'google' | 'github' | 'guest' | 'email') => {
     e.preventDefault();
     setAuthLoading(true);
 
@@ -185,8 +197,16 @@ export default function App() {
       resolvedName = 'Aryan Raj (GitHub)';
     } else if (provider === 'email') {
       const emailVal = authEmail.trim().toLowerCase();
-      if (!emailVal || !authPassword) {
-        toast.error("Please enter email and password");
+      const passwordError = getPasswordError(authPassword);
+
+      if (!EMAIL_PATTERN.test(emailVal)) {
+        toast.error('Please enter a valid email address');
+        setAuthLoading(false);
+        return;
+      }
+
+      if (passwordError) {
+        toast.error(passwordError);
         setAuthLoading(false);
         return;
       }
@@ -226,14 +246,36 @@ export default function App() {
     }, 800);
   };
 
-  const handleRealRegister = async (e: React.FormEvent) => {
+  const handleRealRegister = async (e: FormEvent) => {
     e.preventDefault();
-    const nameVal = authName.trim();
+    const nameVal = normalizeText(authName);
     const emailVal = authEmail.trim().toLowerCase();
-    const cityVal = authCity.trim();
-    const countryVal = authCountry.trim();
-    if (!nameVal || !emailVal || !authPassword || !cityVal || !countryVal) {
-      toast.error("Please fill in all fields (Name, Email, Password, City, and Country).");
+    const cityVal = normalizeText(authCity);
+    const countryVal = normalizeText(authCountry);
+    const passwordError = getPasswordError(authPassword);
+
+    if (!NAME_PATTERN.test(nameVal)) {
+      toast.error('Please enter a valid name');
+      return;
+    }
+
+    if (!EMAIL_PATTERN.test(emailVal)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    if (passwordError) {
+      toast.error(passwordError);
+      return;
+    }
+
+    if (!NAME_PATTERN.test(cityVal)) {
+      toast.error('Please enter a valid city');
+      return;
+    }
+
+    if (!NAME_PATTERN.test(countryVal)) {
+      toast.error('Please enter a valid country');
       return;
     }
     setAuthLoading(true);
@@ -272,7 +314,7 @@ export default function App() {
     }
   };
 
-  const handleUpdateProfileSubmit = async (e: React.FormEvent) => {
+  const handleUpdateProfileSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const ok = await updateProfile({
       name: tgtName,
@@ -396,6 +438,7 @@ export default function App() {
                 <input
                   type="email"
                   placeholder=""
+                  required
                   value={authEmail}
                   onChange={(e) => setAuthEmail(e.target.value)}
                   className="w-full rounded-lg border border-slate-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2 text-xs text-slate-950 dark:text-zinc-100 outline-none focus:border-green-500 font-medium"
@@ -407,6 +450,9 @@ export default function App() {
                 <input
                   type="password"
                   placeholder=""
+                  required
+                  minLength={8}
+                  maxLength={128}
                   value={authPassword}
                   onChange={(e) => setAuthPassword(e.target.value)}
                   className="w-full rounded-lg border border-slate-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2 text-xs text-slate-950 dark:text-zinc-100 outline-none focus:border-green-500 font-medium"
@@ -427,7 +473,7 @@ export default function App() {
                     }}
                     className="text-green-600 dark:text-green-400 font-bold hover:underline cursor-pointer ml-0.5"
                   >
-                    Sign In
+                    Create account
                   </button>
                 </span>
                 <button
@@ -457,6 +503,8 @@ export default function App() {
                   type="text"
                   placeholder=""
                   required
+                  minLength={2}
+                  maxLength={80}
                   value={authName}
                   onChange={(e) => setAuthName(e.target.value)}
                   className="w-full rounded-lg border border-slate-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2 text-xs text-slate-950 dark:text-zinc-100 outline-none focus:border-green-500 font-medium"
@@ -481,6 +529,8 @@ export default function App() {
                   type="password"
                   placeholder=""
                   required
+                  minLength={8}
+                  maxLength={128}
                   value={authPassword}
                   onChange={(e) => setAuthPassword(e.target.value)}
                   className="w-full rounded-lg border border-slate-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2 text-xs text-slate-950 dark:text-zinc-100 outline-none focus:border-green-500 font-medium"
@@ -494,6 +544,8 @@ export default function App() {
                     type="text"
                     placeholder=""
                     required
+                    minLength={2}
+                    maxLength={80}
                     value={authCity}
                     onChange={(e) => setAuthCity(e.target.value)}
                     className="w-full rounded-lg border border-slate-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2 text-xs text-slate-950 dark:text-zinc-100 outline-none focus:border-green-500 font-medium"
@@ -506,6 +558,8 @@ export default function App() {
                     type="text"
                     placeholder=""
                     required
+                    minLength={2}
+                    maxLength={80}
                     value={authCountry}
                     onChange={(e) => setAuthCountry(e.target.value)}
                     className="w-full rounded-lg border border-slate-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2 text-xs text-slate-950 dark:text-zinc-100 outline-none focus:border-green-500 font-medium"

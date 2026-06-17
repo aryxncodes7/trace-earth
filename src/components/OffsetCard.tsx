@@ -61,6 +61,7 @@ export const OFFSET_PROJECTS: OffsetProject[] = [
 interface OffsetCardProps {
   project: OffsetProject;
   userMonthlyAverageKg: number; // e.g. 15.0 kg/day -> 450kg/month -> 0.45 tonnes
+  key?: string;
 }
 
 export default function OffsetCard({ project, userMonthlyAverageKg }: OffsetCardProps) {

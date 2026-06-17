@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { Car, Home, Salad, ShoppingBag, ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { calcTotal } from '../lib/carbonCalc.js';
 
@@ -72,7 +72,7 @@ export default function ActivityForm({ onSuccess, onSave }: ActivityFormProps) {
     setStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMsg(null);
