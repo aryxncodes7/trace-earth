@@ -113,31 +113,23 @@ Streaming: 0.036 kg per hour
 - A PostgreSQL database (Neon free tier recommended)
 - Google Gemini API key (free at [aistudio.google.com](https://aistudio.google.com))
 
-### Local setup
+## 🛠️ Local Setup
 
-```bash
-# Clone the repository
-git clone https://github.com/aryxncodes7/trace-earth.git
-cd trace-earth
+Follow these steps to get the project running locally on your machine.
 
-# Install dependencies
-npm install
+### Prerequisites
 
-# Copy environment variables
-cp .env.example .env
-# Fill in your values in .env
+Make sure you have the following installed:
+* **Node.js** (v18 or higher recommended)
+* **npm** or **yarn** / **pnpm**
 
-# Run database migrations
-npx prisma migrate dev
+### Installation Steps
 
-# Seed with demo data
-npx prisma db seed
-
-# Start development server
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
+1. **Clone the repository:**
+   ```
+   git clone [https://github.com/your-username/trace.earth.git](https://github.com/your-username/trace.earth.git)
+   cd trace.earth
+   ```
 
 ### Environment variables
 
