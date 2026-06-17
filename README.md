@@ -203,6 +203,13 @@ trace-earth/
 
 trace.earth was built as a competition entry for PromptWars Virtual, Challenge 3: Carbon Footprint Awareness Platform. The goal was to move beyond basic carbon calculators and build something people would actually use - a product that feels personal, looks professional, and makes the data actionable.
 
+##  AI-Assisted Development Workflow
+This project was rapidly prototyped and built using an iterative design-by-prompting workflow in **Google AI Studio**. 
+
+Instead of writing everything from scratch, the development process focused on:
+* **Strategic Prompting:** Breaking down complex full-stack requirements into modular prompts.
+* **Rapid Iteration:** Reviewing generated outputs in real-time, diagnosing layout/logic bugs, and feeding immediate feedback back into Gemini 1.5 Flash to refine the codebase.
+* **Human-in-the-Loop Architecture:** Guiding the AI to stitch together state management (Zustand), database ORM (Prisma), and authentication pipelines into a cohesive, production-ready system.
 ---
 
 <div align="center">
