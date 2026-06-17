@@ -117,11 +117,7 @@ Streaming: 0.036 kg per hour
 
 Follow these steps to get the project running locally on your machine.
 
-### Prerequisites
 
-Make sure you have the following installed:
-* **Node.js** (v18 or higher recommended)
-* **npm** or **yarn** / **pnpm**
 
 ### Installation Steps
 
