@@ -676,7 +676,7 @@ export default function App() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-5 gap-3">
               <div>
                 <h1 className="font-sans text-xl font-semibold text-slate-800 tracking-tight dark:text-zinc-100">
-                  Namaste, {user?.name || email.split('@')[0]}
+                  Hello, {user?.name || email.split('@')[0]}
                 </h1>
                 <div className="flex flex-col gap-1 mt-0.5">
                   <span className="text-xs text-slate-500 font-medium">
