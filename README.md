@@ -1,29 +1,21 @@
 <div align="center">
+  <br />
+  <p align="center">
+    <a href="https://trace-earth.onrender.com">
+      <img src="favicon.svg" width="56" height="56" alt="trace.earth logo" />
+    </a>
+  </p>
 
-<br />
+  <h1 align="center">
+    trace<span style="color: #16a34a; font-weight: 400;">.earth</span>
+  </h1>
 
-<p align="center">
-  <a href="https://trace-earth.onrender.com">
-    <img src="favicon.svg" width="48" height="48" alt="trace.earth logo" />
-  </a>
-</p>
+  <p align="center">
+    <i>Track your carbon footprint. Understand your impact. Act today.</i>
+  </p>
 
-<h1 align="center">
-  trace<span style="color: #16a34a; font-weight: 400;">.earth</span>
-</h1>
-
-<p align="center">
-  <i>Track your carbon footprint. Understand your impact. Act today.</i>
-</p>
-
----
-
-
-
-<br />
-
-**Track your carbon footprint. Understand your impact. Act today.**
-
+  ---
+  <br />
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-trace--earth.onrender.com-16a34a?style=flat-square)](https://trace-earth.onrender.com)
 [![Built with](https://img.shields.io/badge/Built%20with-React%20%2B%20Express-orange?style=flat-square)](https://react.dev)
 [![AI Powered](https://img.shields.io/badge/AI-Gemini%201.5%20Flash-purple?style=flat-square)](https://ai.google.dev)
