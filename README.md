@@ -1,20 +1,13 @@
-<div align="center">
-  <br />
-  <p align="center">
-    <a href="https://trace-earth.onrender.com">
-      <img src="favicon.svg" width="60" height="60" alt="trace.earth logo" />
-    </a>
-  </p>
+<p align="center">
+  <a href="https://trace-earth.onrender.com">
+    <img src="https://raw.githubusercontent.com/aryxncodes7/trace-earth/main/public/logo.svg" width="220" alt="trace.earth logo" />
+  </a>
+</p>
 
-  <h1 align="center" style="font-size: 2.5rem; font-weight: 700;">
-    trace<span style="color: #16a34a; font-weight: 400;">.earth</span>
-  </h1>
-
-  <p align="center">
-    <i>Track your carbon footprint. Understand your impact. Act today.</i>
-  </p>
-  <br />
-</div>
+<p align="center">
+  <strong>trace.earth</strong><br>
+  <i>Track your carbon footprint. Understand your impact. Act today.</i>
+</p>
 
 ## What is trace.earth?
 
