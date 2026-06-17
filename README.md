@@ -11,14 +11,14 @@
   <text x="52" y="28" font-family="Inter, sans-serif" font-size="22" font-weight="500" fill="#0f172a">trace<tspan fill="#16a34a" font-weight="400">.earth</tspan></text>
 </svg>
 <br />
-Track your carbon footprint. Understand your impact. Act today.
-
-Show Image
-Show Image
-Show Image
-Show Image
-
+**Track your carbon footprint. Understand your impact. Act today.**
+ 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-trace--earth.onrender.com-16a34a?style=flat-square)](https://trace-earth.onrender.com)
+[![Built with](https://img.shields.io/badge/Built%20with-React%20%2B%20Express-orange?style=flat-square)](https://react.dev)
+[![AI Powered](https://img.shields.io/badge/AI-Gemini%201.5%20Flash-purple?style=flat-square)](https://ai.google.dev)
+ 
 </div>
+---
 
 ## What is trace.earth?
 
