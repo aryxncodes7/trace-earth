@@ -205,8 +205,8 @@ export default function App() {
             name: 'Guest',
             email: guest.email,
             password: guest.password,
-            city: 'Guest City',
-            country: 'Guest',
+            city: 'New Delhi',
+            country: 'India',
           }),
         });
         if (!response.ok) {
