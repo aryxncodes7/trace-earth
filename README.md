@@ -1,17 +1,21 @@
 <div align="center">
 <br />
-<svg width="180" height="44" viewBox="0 0 180 44" xmlns="http://www.w3.org/2000/svg">
-  <defs><clipPath id="nc"><circle cx="22" cy="22" r="16"/></clipPath></defs>
-  <circle cx="22" cy="22" r="16" fill="#dbeafe"/>
-  <ellipse cx="20" cy="20" rx="5" ry="7" fill="#16a34a" opacity="0.75" clip-path="url(#nc)"/>
-  <ellipse cx="27" cy="25" rx="4" ry="5" fill="#16a34a" opacity="0.6" clip-path="url(#nc)"/>
-  <circle cx="22" cy="22" r="16" fill="none" stroke="#93c5fd" stroke-width="0.5"/>
-  <ellipse cx="22" cy="22" rx="21" ry="7" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>
-  <circle cx="43" cy="22" r="3" fill="#16a34a"/>
-  <text x="52" y="28" font-family="Inter, sans-serif" font-size="28" font-weight="500" fill="#0f172a">trace<tspan fill="#16a34a" font-weight="400">.earth</tspan></text>
+<svg width="240" height="50" viewBox="0 0 240 50" xmlns="http://www.w3.org/2000/svg">
+  <defs><clipPath id="nc"><circle cx="22" cy="25" r="16"/></clipPath></defs>
+  <circle cx="22" cy="25" r="16" fill="#dbeafe"/>
+  <ellipse cx="20" cy="23" rx="5" ry="7" fill="#16a34a" opacity="0.75" clip-path="url(#nc)"/>
+  <ellipse cx="27" cy="28" rx="4" ry="5" fill="#16a34a" opacity="0.6" clip-path="url(#nc)"/>
+  <circle cx="22" cy="25" r="16" fill="none" stroke="#93c5fd" stroke-width="0.5"/>
+  <ellipse cx="22" cy="25" rx="21" ry="7" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>
+  <circle cx="43" cy="25" r="3" fill="#16a34a"/>
+  
+  <text x="54" y="35" font-family="Inter, sans-serif" font-size="36" font-weight="500" fill="#0f172a">trace<tspan fill="#16a34a" font-weight="400">.earth</tspan></text>
 </svg>
 <br />
-**Track your carbon footprint. Understand your impact. Act today.**
+
+<sub>*Track your carbon footprint. Understand your impact. Act today.*</sub>
+<br />
+<br />
  
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-trace--earth.onrender.com-16a34a?style=flat-square)](https://trace-earth.onrender.com)
 [![Built with](https://img.shields.io/badge/Built%20with-React%20%2B%20Express-orange?style=flat-square)](https://react.dev)
