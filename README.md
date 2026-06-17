@@ -2,7 +2,7 @@
 
 <br />
 
-<svg width="180" height="44" viewBox="0 0 180 44" xmlns="http://www.w3.org/2000/svg">
+<svg width="220" height="44" viewBox="0 0 220 44" xmlns="http://www.w3.org/2000/svg">
   <defs><clipPath id="nc"><circle cx="22" cy="22" r="16"/></clipPath></defs>
   <circle cx="22" cy="22" r="16" fill="#dbeafe"/>
   <ellipse cx="20" cy="20" rx="5" ry="7" fill="#16a34a" opacity="0.75" clip-path="url(#nc)"/>
@@ -10,7 +10,7 @@
   <circle cx="22" cy="22" r="16" fill="none" stroke="#93c5fd" stroke-width="0.5"/>
   <ellipse cx="22" cy="22" rx="21" ry="7" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>
   <circle cx="43" cy="22" r="3" fill="#16a34a"/>
-  <text x="52" y="28" font-family="Inter, sans-serif" font-size="32" font-weight="500" fill="#0f172a">trace<tspan fill="#16a34a" font-weight="400">.earth</tspan></text>
+<text x="52" y="31" font-family="Inter, sans-serif" font-size="32" font-weight="500" fill="currentColor">trace<tspan fill="#16a34a" font-weight="400">.earth</tspan></text>
 </svg>
 
 <br />
