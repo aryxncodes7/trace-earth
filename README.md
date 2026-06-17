@@ -2,21 +2,19 @@
 
 <br />
 
-<svg width="220" height="44" viewBox="0 0 220 44" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <clipPath id="nc">
-      <circle cx="22" cy="22" r="16" />
-    </clipPath>
-  </defs>
-  <circle cx="22" cy="22" r="16" fill="#dbeafe" />
-  <ellipse cx="20" cy="20" rx="5" ry="7" fill="#16a34a" opacity="0.75" clip-path="url(#nc)" />
-  <ellipse cx="27" cy="25" rx="4" ry="5" fill="#16a34a" opacity="0.6" clip-path="url(#nc)" />
-  <circle cx="22" cy="22" r="16" fill="none" stroke="#93c5fd" stroke-width="0.5" />
-  <ellipse cx="22" cy="22" rx="21" ry="7" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5" />
-  <circle cx="43" cy="22" r="3" fill="#16a34a" />
-  
-  <text x="52" y="32" font-family="Inter, sans-serif" font-size="32" font-weight="500" fill="#94a3b8">trace<tspan fill="#16a34a" font-weight="400">.earth</tspan></text>
-</svg>
+<p align="center">
+  <a href="https://trace-earth.onrender.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/aryxncodes7/trace-earth/main/public/logo.svg#gh-dark-mode-only">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/aryxncodes7/trace-earth/main/public/logo.svg#gh-light-mode-only">
+      <img alt="trace.earth" src="https://raw.githubusercontent.com/aryxncodes7/trace-earth/main/public/logo.svg" width="220">
+    </picture>
+  </a>
+</p>
+
+<p align="center">
+  <i>Track your carbon footprint. Understand your impact. Act today.</i>
+</p>
 
 
 
