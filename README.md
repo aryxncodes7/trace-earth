@@ -1,13 +1,24 @@
-<p align="center">
-  <a href="https://trace-earth.onrender.com">
-    <img src="https://raw.githubusercontent.com/aryxncodes7/trace-earth/main/public/logo.svg" width="220" alt="trace.earth logo" />
-  </a>
-</p>
+<div align="center">
+<br />
+<svg width="180" height="44" viewBox="0 0 180 44" xmlns="http://www.w3.org/2000/svg">
+  <defs><clipPath id="nc"><circle cx="22" cy="22" r="16"/></clipPath></defs>
+  <circle cx="22" cy="22" r="16" fill="#dbeafe"/>
+  <ellipse cx="20" cy="20" rx="5" ry="7" fill="#16a34a" opacity="0.75" clip-path="url(#nc)"/>
+  <ellipse cx="27" cy="25" rx="4" ry="5" fill="#16a34a" opacity="0.6" clip-path="url(#nc)"/>
+  <circle cx="22" cy="22" r="16" fill="none" stroke="#93c5fd" stroke-width="0.5"/>
+  <ellipse cx="22" cy="22" rx="21" ry="7" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>
+  <circle cx="43" cy="22" r="3" fill="#16a34a"/>
+  <text x="52" y="28" font-family="Inter, sans-serif" font-size="22" font-weight="500" fill="#0f172a">trace<tspan fill="#16a34a" font-weight="400">.earth</tspan></text>
+</svg>
+<br />
+Track your carbon footprint. Understand your impact. Act today.
 
-<p align="center">
-  <strong>trace.earth</strong><br>
-  <i>Track your carbon footprint. Understand your impact. Act today.</i>
-</p>
+Show Image
+Show Image
+Show Image
+Show Image
+
+</div>
 
 ## What is trace.earth?
 
