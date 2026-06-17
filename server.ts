@@ -4,6 +4,10 @@ import { createServer as createViteServer } from 'vite';
 import { prisma } from './src/lib/prisma.js';
 import { calcTotal, calcTransport, calcEnergy, calcDiet, calcShopping } from './src/lib/carbonCalc.js';
 import { getPersonalizedInsight } from './src/lib/gemini.js';
+import passport from 'passport';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as GitHubStrategy } from 'passport-github2';
+import session from 'express-session';
 
 async function startServer() {
   const app = express();
@@ -11,6 +15,230 @@ async function startServer() {
 
   // Global Middlewares
   app.use(express.json());
+
+  // Session middleware
+  const SESSION_SECRET = process.env.NEXTAUTH_SECRET || 'some-secure-custom-ambient-secret';
+  app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: true,      // Required for SameSite=None
+      sameSite: 'none',  // Required for cross-origin iframe context in AI Studio preview
+      httpOnly: true,    // Best practice
+      maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+    }
+  }));
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // Passport Serialization
+  passport.serializeUser((user: any, done) => {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(async (id: string, done) => {
+    try {
+      const user = await prisma.user.findUnique({ where: { id } });
+      done(null, user);
+    } catch (err) {
+      done(err, null);
+    }
+  });
+
+  // Dynamic origin helper for callback URLs
+  const getOrigin = (req: express.Request) => {
+    if (process.env.APP_URL) {
+      return process.env.APP_URL.replace(/\/$/, '');
+    }
+    const host = req.get('host') || 'localhost:3000';
+    const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+    return `${protocol}://${host}`;
+  };
+
+  // Google Strategy
+  passport.use(new GoogleStrategy({
+      clientID: process.env.GOOGLE_CLIENT_ID || 'dummy-google-client-id',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'dummy-google-client-secret',
+      callbackURL: 'dummy-callback-placeholder',
+      passReqToCallback: true,
+    },
+    async (req: any, accessToken: string, refreshToken: string, profile: any, done: any) => {
+      try {
+        const email = profile.emails?.[0]?.value;
+        if (!email) {
+          return done(new Error('No email found in Google profile'), null);
+        }
+        let user = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
+        if (!user) {
+          user = await prisma.user.create({
+            data: {
+              email: email.toLowerCase().trim(),
+              name: profile.displayName || profile.name?.givenName || email.split('@')[0],
+              image: profile.photos?.[0]?.value || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+              city: 'New Delhi',
+              country: 'India',
+            }
+          });
+        }
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
+      }
+    }
+  ));
+
+  // GitHub Strategy
+  passport.use(new GitHubStrategy({
+      clientID: process.env.GITHUB_CLIENT_ID || 'dummy-github-client-id',
+      clientSecret: process.env.GITHUB_CLIENT_SECRET || 'dummy-github-client-secret',
+      callbackURL: 'dummy-callback-placeholder',
+      passReqToCallback: true,
+    },
+    async (req: any, accessToken: string, refreshToken: string, profile: any, done: any) => {
+      try {
+        let email = profile.emails?.[0]?.value;
+        if (!email) {
+          email = `${profile.username || profile.id}@github.com`;
+        }
+        let user = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
+        if (!user) {
+          user = await prisma.user.create({
+            data: {
+              email: email.toLowerCase().trim(),
+              name: profile.displayName || profile.username || email.split('@')[0],
+              image: profile.photos?.[0]?.value || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+              city: 'New Delhi',
+              country: 'India',
+            }
+          });
+        }
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
+      }
+    }
+  ));
+
+  // Authentication Endpoints
+  app.get('/api/auth/google', (req, res, next) => {
+    const origin = getOrigin(req);
+    const callbackURL = `${origin}/api/auth/google/callback`;
+    passport.authenticate('google', {
+      scope: ['profile', 'email'],
+      callbackURL
+    } as any)(req, res, next);
+  });
+
+  app.get('/api/auth/google/callback', (req, res, next) => {
+    const origin = getOrigin(req);
+    const callbackURL = `${origin}/api/auth/google/callback`;
+    passport.authenticate('google', {
+      callbackURL,
+      failureRedirect: '/?error=google-auth-failed'
+    } as any, (err: any, user: any, info: any) => {
+      if (err || !user) {
+        return res.send(`
+          <html>
+            <body>
+              <script>
+                if (window.opener) {
+                  window.opener.postMessage({ type: 'OAUTH_AUTH_FAILURE', error: '${err?.message || "Auth failed"}' }, '*');
+                  window.close();
+                } else {
+                  window.location.href = '/?error=google-auth-failed';
+                }
+              </script>
+            </body>
+          </html>
+        `);
+      }
+      req.logIn(user, (loginErr) => {
+        if (loginErr) return next(loginErr);
+        return res.send(`
+          <html>
+            <body>
+              <script>
+                if (window.opener) {
+                  window.opener.postMessage({ type: 'OAUTH_AUTH_SUCCESS', email: '${user.email}' }, '*');
+                  window.close();
+                } else {
+                  window.location.href = '/';
+                }
+              </script>
+            </body>
+          </html>
+        `);
+      });
+    })(req, res, next);
+  });
+
+  app.get('/api/auth/github', (req, res, next) => {
+    const origin = getOrigin(req);
+    const callbackURL = `${origin}/api/auth/github/callback`;
+    passport.authenticate('github', {
+      scope: ['user:email'],
+      callbackURL
+    } as any)(req, res, next);
+  });
+
+  app.get('/api/auth/github/callback', (req, res, next) => {
+    const origin = getOrigin(req);
+    const callbackURL = `${origin}/api/auth/github/callback`;
+    passport.authenticate('github', {
+      callbackURL,
+      failureRedirect: '/?error=github-auth-failed'
+    } as any, (err: any, user: any, info: any) => {
+      if (err || !user) {
+        return res.send(`
+          <html>
+            <body>
+              <script>
+                if (window.opener) {
+                  window.opener.postMessage({ type: 'OAUTH_AUTH_FAILURE', error: '${err?.message || "Auth failed"}' }, '*');
+                  window.close();
+                } else {
+                  window.location.href = '/?error=github-auth-failed';
+                }
+              </script>
+            </body>
+          </html>
+        `);
+      }
+      req.logIn(user, (loginErr) => {
+        if (loginErr) return next(loginErr);
+        return res.send(`
+          <html>
+            <body>
+              <script>
+                if (window.opener) {
+                  window.opener.postMessage({ type: 'OAUTH_AUTH_SUCCESS', email: '${user.email}' }, '*');
+                  window.close();
+                } else {
+                  window.location.href = '/';
+                }
+              </script>
+            </body>
+          </html>
+        `);
+      });
+    })(req, res, next);
+  });
+
+  app.get('/api/auth/me', (req, res) => {
+    if (req.isAuthenticated && req.isAuthenticated()) {
+      return res.json({ authenticated: true, user: req.user });
+    }
+    return res.json({ authenticated: false });
+  });
+
+  app.post('/api/auth/logout', (req, res, next) => {
+    req.logout((err) => {
+      if (err) return next(err);
+      res.json({ success: true });
+    });
+  });
 
   // API 0: REGISTER USER (POST /api/auth/register)
   app.post('/api/auth/register', async (req, res) => {

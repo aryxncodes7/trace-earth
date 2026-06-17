@@ -89,6 +89,40 @@ export default function App() {
     }
   }, [email]);
 
+  // On mount: check session from server cookie and register message receiver for OAuth popup frames
+  useEffect(() => {
+    const checkUserSession = async () => {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.authenticated && data.user?.email) {
+            setEmail(data.user.email);
+            setActiveTab('dashboard');
+          }
+        }
+      } catch (err) {
+        console.error('Error during automatic session check:', err);
+      }
+    };
+    checkUserSession();
+
+    const receiveOAuthMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'OAUTH_AUTH_SUCCESS' && event.data?.email) {
+        setEmail(event.data.email);
+        setActiveTab('dashboard');
+        toast.success(`Successfully signed in as ${event.data.email}!`);
+      } else if (event.data?.type === 'OAUTH_AUTH_FAILURE') {
+        toast.error(`OAuth login failed: ${event.data.error || 'Identity verification cancelled'}`);
+      }
+    };
+
+    window.addEventListener('message', receiveOAuthMessage);
+    return () => {
+      window.removeEventListener('message', receiveOAuthMessage);
+    };
+  }, []);
+
   // Sync settings local state with loaded user profile
   useEffect(() => {
     if (user) {
@@ -102,6 +136,35 @@ export default function App() {
 
   const handleSplashComplete = () => {
     setShowSplash(false);
+  };
+
+  const handleOAuthLogin = (e: React.MouseEvent, provider: 'google' | 'github') => {
+    e.preventDefault();
+    setAuthLoading(true);
+
+    const width = 600;
+    const height = 700;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
+    const popup = window.open(
+      `/api/auth/${provider}`,
+      'oauth_popup',
+      `width=${width},height=${height},left=${left},top=${top},status=no,resizable=yes`
+    );
+
+    if (!popup) {
+      toast.error('Popup blocked! Please allow popups to sign in.');
+      setAuthLoading(false);
+      return;
+    }
+
+    const checkPopupClosed = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(checkPopupClosed);
+        setAuthLoading(false);
+      }
+    }, 1000);
   };
 
   const handleSimulateLogin = async (e: React.FormEvent, provider: 'google' | 'github' | 'guest' | 'email') => {
@@ -236,8 +299,13 @@ export default function App() {
     setShowResetConfirm(true);
   };
 
-  const handleUserLogout = () => {
+  const handleUserLogout = async () => {
     localStorage.removeItem('trace_user_email');
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (err) {
+      console.error('Failed backend session logout:', err);
+    }
     window.location.reload();
   };
 
@@ -292,10 +360,7 @@ export default function App() {
           {/* Google and GitHub Sign-in buttons */}
           <div className="space-y-3">
             <button
-              onClick={(e) => {
-                window.open('https://accounts.google.com', '_blank');
-                handleSimulateLogin(e, 'google');
-              }}
+              onClick={(e) => handleOAuthLogin(e, 'google')}
               className="w-full flex items-center justify-center space-x-2 rounded-lg border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-2 px-4 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-50 dark:hover:bg-zinc-800 hover:text-slate-950 hover:border-slate-300 transition-all active:scale-98 cursor-pointer"
             >
               <Globe className="h-4 w-4 text-blue-500" />
@@ -303,10 +368,7 @@ export default function App() {
             </button>
             
             <button
-              onClick={(e) => {
-                window.open('https://github.com/login', '_blank');
-                handleSimulateLogin(e, 'github');
-              }}
+              onClick={(e) => handleOAuthLogin(e, 'github')}
               className="w-full flex items-center justify-center space-x-2 rounded-lg border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-2 px-4 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-50 dark:hover:bg-zinc-800 hover:text-slate-950 hover:border-slate-300 transition-all active:scale-98 cursor-pointer"
             >
               <Github className="h-4 w-4 text-slate-950 dark:text-zinc-100" />
