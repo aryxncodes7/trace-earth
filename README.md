@@ -116,8 +116,8 @@ Follow these steps to get the project running locally on your machine.
 
 1. **Clone the repository:**
    ```
-   git clone [https://github.com/your-username/trace.earth.git](https://github.com/your-username/trace.earth.git)
-   cd trace.earth
+   git clone https://github.com/aryxncodes7/trace-earth.git
+   cd trace-earth
    ```
 
 ### Environment variables
