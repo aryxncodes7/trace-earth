@@ -996,7 +996,6 @@ export default function App() {
 
             {/* Destructive / Testing account triggers */}
             <div className="rounded-xl border border-red-200 bg-red-50/10 p-5 space-y-4">
-              g
 
               <div className="flex flex-wrap gap-3">
                 

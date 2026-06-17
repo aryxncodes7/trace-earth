@@ -20,7 +20,7 @@
     "express-session": "^1.19.0",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
-    "next-auth": "^4.24.14",
+    "next-auth": "^3.29.10",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0",

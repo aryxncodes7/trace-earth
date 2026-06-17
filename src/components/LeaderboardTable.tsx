@@ -127,7 +127,7 @@ export default function LeaderboardTable({
                     }`}
                   >
                     {/* Rank Row */}
-                    <td className="py-3 px-3 sm:px-4 text-center font-mono font-medium tabular-nums text-slate-500 dark:text-zinc-400">
+                    <td className="py-3 px-3 sm:px-4 text-center font-sans font-medium tabular-nums text-slate-500 dark:text-zinc-400">
                       {rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank}
                     </td>
 
@@ -148,7 +148,7 @@ export default function LeaderboardTable({
 
                     {/* Daily Average (Lower is better!) */}
                     <td className="py-3 px-3 sm:px-4 text-center">
-                      <span className={`font-mono text-xs font-semibold tabular-nums ${
+                      <span className={`font-sans text-xs font-semibold tabular-nums ${
                         item.avgEmission < 8.0
                           ? 'text-green-600 dark:text-green-400'
                           : item.avgEmission <= 13.0
@@ -160,7 +160,7 @@ export default function LeaderboardTable({
                     </td>
 
                     {/* Record Count */}
-                    <td className="py-3 px-3 sm:px-4 text-center font-mono tabular-nums text-slate-400 dark:text-zinc-500">
+                    <td className="py-3 px-3 sm:px-4 text-center font-sans tabular-nums text-slate-400 dark:text-zinc-500">
                       {item.logsLogged}
                     </td>
                   </tr>
