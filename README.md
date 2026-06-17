@@ -4,17 +4,19 @@
 
 <p align="center">
   <a href="https://trace-earth.onrender.com">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/aryxncodes7/trace-earth/main/public/logo.svg#gh-dark-mode-only">
-      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/aryxncodes7/trace-earth/main/public/logo.svg#gh-light-mode-only">
-      <img alt="trace.earth" src="https://raw.githubusercontent.com/aryxncodes7/trace-earth/main/public/logo.svg" width="220">
-    </picture>
+    <img src="favicon.svg" width="48" height="48" alt="trace.earth logo" />
   </a>
 </p>
+
+<h1 align="center">
+  trace<span style="color: #16a34a; font-weight: 400;">.earth</span>
+</h1>
 
 <p align="center">
   <i>Track your carbon footprint. Understand your impact. Act today.</i>
 </p>
+
+---
 
 
 
