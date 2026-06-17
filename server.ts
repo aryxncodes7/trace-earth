@@ -23,11 +23,11 @@ async function startServer() {
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: true,      // Required for SameSite=None
-      sameSite: 'none',  // Required for cross-origin iframe context in AI Studio preview
-      httpOnly: true,    // Best practice
-      maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-    }
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  httpOnly: true,
+  maxAge: 30 * 24 * 60 * 60 * 1000
+}
   }));
 
   app.use(passport.initialize());
