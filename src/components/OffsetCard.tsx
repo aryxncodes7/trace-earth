@@ -78,7 +78,7 @@ export default function OffsetCard({ project, userMonthlyAverageKg }: OffsetCard
             <ShieldCheck className="h-3 w-3 text-emerald-600" />
             <span>{project.certification}</span>
           </span>
-          <span className="font-mono text-sm font-semibold text-slate-800 tabular-nums">
+          <span className="font-sans text-sm font-semibold text-slate-800 tabular-nums">
             ${project.costPerTonne.toFixed(2)} <span className="text-[10px] font-normal text-slate-400">/ t</span>
           </span>
         </div>
@@ -108,7 +108,7 @@ export default function OffsetCard({ project, userMonthlyAverageKg }: OffsetCard
         <div className="flex items-center justify-between">
           <div>
             <span className="block text-[10px] uppercase text-slate-400 tracking-wider">Offset Cost</span>
-            <span className="font-mono text-lg font-semibold text-slate-800 tabular-nums">
+            <span className="font-sans text-lg font-semibold text-slate-800 tabular-nums">
               ${priceToOffset > 0 ? priceToOffset.toFixed(2) : '0.00'}
             </span>
           </div>

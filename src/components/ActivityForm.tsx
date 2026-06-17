@@ -1,5 +1,5 @@
 import { useState, useEffect, type FormEvent } from 'react';
-import { Car, Home, Salad, ShoppingBag, ArrowLeft, ArrowRight, Check } from 'lucide-react';
+import { Car, Home, Salad, ShoppingBag, Check } from 'lucide-react';
 import { calcTotal } from '../lib/carbonCalc.js';
 
 interface ActivityFormProps {
@@ -31,6 +31,12 @@ export default function ActivityForm({ onSuccess, onSave }: ActivityFormProps) {
   // Real-time calculation preview state
   const [previewTotal, setPreviewTotal] = useState<number>(0);
   const [previewBreakdown, setPreviewBreakdown] = useState({ transport: 0, energy: 0, diet: 0, shopping: 0 });
+  const habitSections = [
+    { id: 1, label: 'Transport', icon: Car, color: 'text-blue-600' },
+    { id: 2, label: 'Energy', icon: Home, color: 'text-amber-500' },
+    { id: 3, label: 'Diet', icon: Salad, color: 'text-emerald-600' },
+    { id: 4, label: 'Shopping', icon: ShoppingBag, color: 'text-pink-500' },
+  ];
 
   // Compute live calculations when entries update
   useEffect(() => {
@@ -61,16 +67,6 @@ export default function ActivityForm({ onSuccess, onSave }: ActivityFormProps) {
     clothingItems,
     streamingHours,
   ]);
-
-  const handleNext = () => {
-    setErrorMsg(null);
-    setStep((prev) => Math.min(prev + 1, 4));
-  };
-
-  const handleBack = () => {
-    setErrorMsg(null);
-    setStep((prev) => Math.max(prev - 1, 1));
-  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -110,23 +106,31 @@ export default function ActivityForm({ onSuccess, onSave }: ActivityFormProps) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:p-2">
       {/* 1. Primary wizard card */}
       <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
-        {/* Step Indicator Headers */}
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            {[1, 2, 3, 4].map((num) => (
-              <div
-                key={num}
-                className={`h-2 w-10 rounded-full transition-all duration-300 ${
-                  step === num
-                    ? 'bg-green-600 w-14'
-                    : step > num
-                    ? 'bg-green-200'
-                    : 'bg-slate-100'
+        {/* Category Menu */}
+        <div className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {habitSections.map((section) => {
+            const Icon = section.icon;
+            const isActive = step === section.id;
+
+            return (
+              <button
+                key={section.id}
+                type="button"
+                onClick={() => {
+                  setErrorMsg(null);
+                  setStep(section.id);
+                }}
+                className={`flex h-16 flex-col items-center justify-center rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
+                  isActive
+                    ? 'border-green-600 bg-green-50 text-slate-900 shadow-sm'
+                    : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50'
                 }`}
-              />
-            ))}
-          </div>
-          <span className="font-mono text-xs text-slate-400">Step {step} of 4</span>
+              >
+                <Icon className={`mb-1 h-4 w-4 ${isActive ? section.color : 'text-slate-400'}`} />
+                <span>{section.label}</span>
+              </button>
+            );
+          })}
         </div>
 
         {errorMsg && (
@@ -342,46 +346,22 @@ export default function ActivityForm({ onSuccess, onSave }: ActivityFormProps) {
             </div>
           )}
 
-          {/* Stepper Buttons Panel */}
-          <div className="flex justify-between border-t border-slate-100 pt-5">
-            {step > 1 ? (
-              <button
-                type="button"
-                onClick={handleBack}
-                className="inline-flex items-center space-x-1 py-1.5 px-4 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95 cursor-pointer"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                <span>Back</span>
-              </button>
-            ) : (
-              <div /> // Spacing container
-            )}
-
-            {step < 4 ? (
-              <button
-                type="button"
-                onClick={handleNext}
-                className="inline-flex items-center space-x-1 py-1.5 px-4 rounded-lg bg-green-600 text-xs font-medium text-white hover:bg-green-700 transition-all active:scale-95 cursor-pointer"
-              >
-                <span>Continue</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </button>
-            ) : (
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="inline-flex items-center space-x-1.5 py-1.5 px-5 rounded-lg bg-green-600 text-xs font-medium text-white hover:bg-green-700 transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
-              >
-                {isSubmitting ? (
-                  <span>Logging...</span>
-                ) : (
-                  <>
-                    <Check className="h-3.5 w-3.5" />
-                    <span>Log Daily Habits</span>
-                  </>
-                )}
-              </button>
-            )}
+          {/* Save Button */}
+          <div className="flex justify-end border-t border-slate-100 pt-5">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="inline-flex items-center space-x-1.5 py-1.5 px-5 rounded-lg bg-green-600 text-xs font-medium text-white hover:bg-green-700 transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+            >
+              {isSubmitting ? (
+                <span>Logging...</span>
+              ) : (
+                <>
+                  <Check className="h-3.5 w-3.5" />
+                  <span>Log Daily Habits</span>
+                </>
+              )}
+            </button>
           </div>
         </form>
       </div>

@@ -69,6 +69,8 @@ export default function Navbar({ activeTab, setActiveTab, email, user = null, on
     { id: 'offset', label: 'Offsets', icon: Leaf },
   ];
 
+  const isImageUrl = typeof user?.image === 'string' && /^https?:\/\//i.test(user.image);
+
   return (
     <>
       {/* 1. Desktop & Mobile Top Bar Header Layout */}
@@ -150,7 +152,14 @@ export default function Navbar({ activeTab, setActiveTab, email, user = null, on
                   title="View Profile Settings & Actions"
                   aria-expanded={dropdownOpen}
                 >
-                  {user?.image ? (
+                  {isImageUrl ? (
+                    <img
+                      src={user.image || ''}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                      className="h-full w-full rounded-full object-cover"
+                    />
+                  ) : user?.image ? (
                     <span className="text-base leading-none select-none">{user.image}</span>
                   ) : (
                     <span className="font-sans text-xs font-semibold text-slate-700 dark:text-zinc-200 uppercase select-none">

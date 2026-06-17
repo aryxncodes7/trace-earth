@@ -94,15 +94,15 @@ export default function LeaderboardTable({
       </div>
 
       {/* Ranks Table mapping */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <table className="w-full border-collapse text-left text-xs text-slate-600 dark:text-zinc-300">
+      <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        <table className="min-w-[640px] w-full border-collapse text-left text-xs text-slate-600 dark:text-zinc-300">
           <thead>
             <tr className="border-b border-slate-100 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/50 text-[10px] uppercase font-semibold text-slate-400 dark:text-zinc-500 tracking-wider">
-              <th className="py-3 px-4 w-16 text-center">Rank</th>
-              <th className="py-3 px-4">Partner Name</th>
-              <th className="py-3 px-4">Location</th>
-              <th className="py-3 px-4 w-28 text-center">Daily Average</th>
-              <th className="py-3 px-4 w-24 text-center">Logs Saved</th>
+              <th className="py-3 px-3 sm:px-4 w-14 sm:w-16 text-center">Rank</th>
+              <th className="py-3 px-3 sm:px-4">Partner Name</th>
+              <th className="py-3 px-3 sm:px-4">Location</th>
+              <th className="py-3 px-3 sm:px-4 w-28 text-center">Daily Average</th>
+              <th className="py-3 px-3 sm:px-4 w-24 text-center">Logs Saved</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-zinc-800/60">
@@ -127,12 +127,12 @@ export default function LeaderboardTable({
                     }`}
                   >
                     {/* Rank Row */}
-                    <td className="py-3 px-4 text-center font-mono font-medium tabular-nums text-slate-500 dark:text-zinc-400">
+                    <td className="py-3 px-3 sm:px-4 text-center font-mono font-medium tabular-nums text-slate-500 dark:text-zinc-400">
                       {rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank}
                     </td>
 
                     {/* Member Name */}
-                    <td className="py-3 px-4 flex items-center space-x-2 text-slate-800 dark:text-zinc-100 font-sans">
+                    <td className="py-3 px-3 sm:px-4 flex items-center space-x-2 text-slate-800 dark:text-zinc-100 font-sans">
                       <span>{item.name}</span>
                       {isCurrentUser && (
                         <span className="inline-flex rounded-full bg-green-100 dark:bg-green-950/60 text-green-700 dark:text-green-400 px-1.5 py-0.2 text-[9px] font-normal tracking-wide">
@@ -142,12 +142,12 @@ export default function LeaderboardTable({
                     </td>
 
                     {/* Location */}
-                    <td className="py-3 px-4 font-sans text-slate-500 dark:text-zinc-400 text-xs">
+                    <td className="py-3 px-3 sm:px-4 font-sans text-slate-500 dark:text-zinc-400 text-xs">
                       {item.city}, {item.country}
                     </td>
 
                     {/* Daily Average (Lower is better!) */}
-                    <td className="py-3 px-4 text-center">
+                    <td className="py-3 px-3 sm:px-4 text-center">
                       <span className={`font-mono text-xs font-semibold tabular-nums ${
                         item.avgEmission < 8.0
                           ? 'text-green-600 dark:text-green-400'
@@ -160,7 +160,7 @@ export default function LeaderboardTable({
                     </td>
 
                     {/* Record Count */}
-                    <td className="py-3 px-4 text-center font-mono tabular-nums text-slate-400 dark:text-zinc-500">
+                    <td className="py-3 px-3 sm:px-4 text-center font-mono tabular-nums text-slate-400 dark:text-zinc-500">
                       {item.logsLogged}
                     </td>
                   </tr>

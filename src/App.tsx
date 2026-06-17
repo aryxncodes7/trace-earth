@@ -43,6 +43,15 @@ const getPasswordError = (password: string) => {
   return null;
 };
 
+const createGuestIdentity = () => {
+  const guestId = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  return {
+    id: guestId,
+    email: `guest-${guestId}@guest.trace.earth`,
+    password: `Guest-${guestId}`,
+  };
+};
+
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [authEmail, setAuthEmail] = useState('');
@@ -187,8 +196,33 @@ export default function App() {
     let resolvedName = 'Aryan Raj';
 
     if (provider === 'guest') {
-      resolvedEmail = 'guest.partner@trace.earth';
-      resolvedName = 'Guest Partner';
+      const guest = createGuestIdentity();
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'Guest',
+            email: guest.email,
+            password: guest.password,
+            city: 'Guest City',
+            country: 'Guest',
+          }),
+        });
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Could not create guest account');
+        }
+        const data = await response.json();
+        resolvedEmail = data.user.email;
+        resolvedName = 'Guest';
+        localStorage.setItem('trace_guest_id', guest.id);
+        localStorage.setItem('trace_guest_email', resolvedEmail);
+      } catch (err: any) {
+        toast.error(err.message || 'Could not create guest account');
+        setAuthLoading(false);
+        return;
+      }
     } else if (provider === 'google') {
       resolvedEmail = 'aryan.google@gmail.com';
       resolvedName = 'Aryan Raj (Google)';
@@ -234,11 +268,18 @@ export default function App() {
     // Set email inside store (triggers automated DB sync)
     setEmail(resolvedEmail);
     
+    if (provider === 'guest') {
+      setAuthLoading(false);
+      setActiveTab('dashboard');
+      toast.success('Signed in as Guest');
+      return;
+    }
+
     // Set custom initial values for profile if creating new
     setTimeout(async () => {
       await updateProfile({
         name: resolvedName,
-        city: provider === 'guest' ? 'Mumbai' : 'New Delhi',
+        city: 'New Delhi',
         country: 'India',
       });
       setAuthLoading(false);
@@ -806,21 +847,21 @@ export default function App() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-slate-700">
                 <div className="bg-white border border-slate-200 rounded-lg p-3.5 shadow-sm">
                   <span className="block text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Your Daily Avg</span>
-                  <span className="font-mono text-xl font-semibold text-slate-800 tabular-nums">
+                  <span className="font-sans text-xl font-semibold text-slate-800 tabular-nums">
                     {averageKg.toFixed(1)} <span className="text-xs font-semibold text-slate-500">kg</span>
                   </span>
                 </div>
                 
                 <div className="bg-white border border-slate-200 rounded-lg p-3.5 shadow-sm">
                   <span className="block text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Monthly equivalent</span>
-                  <span className="font-mono text-xl font-semibold text-slate-800 tabular-nums">
+                  <span className="font-sans text-xl font-semibold text-slate-800 tabular-nums">
                     {((averageKg * 30) / 1000).toFixed(2)} <span className="text-xs font-semibold text-slate-500">tonnes</span>
                   </span>
                 </div>
 
                 <div className="bg-white border border-slate-200 rounded-lg p-3.5 shadow-sm">
                   <span className="block text-[10px] text-slate-500 font-semibold uppercase tracking-wider font-semibold text-green-600">Neutralization tier</span>
-                  <span className="font-mono text-xl font-semibold text-slate-800 tabular-nums text-green-600">
+                  <span className="font-sans text-xl font-semibold text-slate-800 tabular-nums text-green-600">
                     🥇 Tier A
                   </span>
                 </div>
@@ -956,9 +997,9 @@ export default function App() {
             {/* Destructive / Testing account triggers */}
             <div className="rounded-xl border border-red-200 bg-red-50/10 p-5 space-y-4">
               <div>
-                <h3 className="font-sans text-sm font-semibold text-red-600">Administrative Actions</h3>
+                <h3 className="font-sans text-sm font-semibold text-red-600">Account Actions</h3>
                 <p className="text-[11px] text-slate-500 font-medium">
-                  Testing and developer tools to clear data or exit the sandbox environment.
+                  Clear the demo profile or sign out of the current account.
                 </p>
               </div>
 
@@ -968,7 +1009,7 @@ export default function App() {
                   className="inline-flex items-center space-x-1.5 rounded-lg border border-red-200 bg-white py-1.5 px-4 text-xs font-semibold text-red-600 hover:bg-red-50 hover:border-red-300 transition-all select-none cursor-pointer"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
-                  <span>Reset Sandbox to Aryan Raj</span>
+                  <span>Reset Demo Profile</span>
                 </button>
 
                 <button
