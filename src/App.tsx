@@ -996,21 +996,10 @@ export default function App() {
 
             {/* Destructive / Testing account triggers */}
             <div className="rounded-xl border border-red-200 bg-red-50/10 p-5 space-y-4">
-              <div>
-                <h3 className="font-sans text-sm font-semibold text-red-600">Account Actions</h3>
-                <p className="text-[11px] text-slate-500 font-medium">
-                  Clear the demo profile or sign out of the current account.
-                </p>
-              </div>
+              g
 
               <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={handleResetData}
-                  className="inline-flex items-center space-x-1.5 rounded-lg border border-red-200 bg-white py-1.5 px-4 text-xs font-semibold text-red-600 hover:bg-red-50 hover:border-red-300 transition-all select-none cursor-pointer"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  <span>Reset Demo Profile</span>
-                </button>
+                
 
                 <button
                   onClick={handleUserLogout}
