@@ -381,7 +381,7 @@ export default function ActivityForm({ onSuccess, onSave }: ActivityFormProps) {
                 <Car className="h-3.5 w-3.5 text-blue-500" />
                 <span>Transport CO₂:</span>
               </span>
-              <span className="font-mono text-slate-800 font-semibold tabular-nums">
+              <span className="font-sans text-slate-800 font-semibold tabular-nums">
                 {previewBreakdown.transport.toFixed(1)} kg
               </span>
             </div>
@@ -392,7 +392,7 @@ export default function ActivityForm({ onSuccess, onSave }: ActivityFormProps) {
                 <Home className="h-3.5 w-3.5 text-amber-500" />
                 <span>Home Utility:</span>
               </span>
-              <span className="font-mono text-slate-800 font-semibold tabular-nums">
+              <span className="font-sans text-slate-800 font-semibold tabular-nums">
                 {previewBreakdown.energy.toFixed(1)} kg
               </span>
             </div>
@@ -403,7 +403,7 @@ export default function ActivityForm({ onSuccess, onSave }: ActivityFormProps) {
                 <Salad className="h-3.5 w-3.5 text-emerald-500" />
                 <span>Food Diet:</span>
               </span>
-              <span className="font-mono text-slate-800 font-semibold tabular-nums">
+              <span className="font-sans text-slate-800 font-semibold tabular-nums">
                 {previewBreakdown.diet.toFixed(1)} kg
               </span>
             </div>
@@ -414,7 +414,7 @@ export default function ActivityForm({ onSuccess, onSave }: ActivityFormProps) {
                 <ShoppingBag className="h-3.5 w-3.5 text-pink-500" />
                 <span>Shopping & Stream:</span>
               </span>
-              <span className="font-mono text-slate-800 font-semibold tabular-nums">
+              <span className="font-sans text-slate-800 font-semibold tabular-nums">
                 {previewBreakdown.shopping.toFixed(1)} kg
               </span>
             </div>
@@ -424,7 +424,7 @@ export default function ActivityForm({ onSuccess, onSave }: ActivityFormProps) {
         {/* Dynamic Cumulative carbon weight indicator box */}
         <div className="rounded-lg bg-white border border-slate-200 p-4 shadow-sm text-center">
           <span className="block text-[10px] text-slate-400 uppercase tracking-widest">Incremental Footprint</span>
-          <span className="block mt-1 font-mono text-3xl font-semibold text-slate-800 tabular-nums">
+          <span className="block mt-1 font-sans text-3xl font-semibold text-slate-800 tabular-nums">
             {previewTotal.toFixed(1)}
           </span>
           <span className="block text-xs font-semibold text-slate-500">kg CO₂ equivalent</span>
