@@ -4,19 +4,6 @@
 
 <svg width="220" height="44" viewBox="0 0 220 44" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <style>
-      .logo-text {
-        font-family: 'Inter', sans-serif;
-        font-size: 32px;
-        font-weight: 500;
-        fill: #0f172a;
-      }
-      @media (prefers-color-scheme: dark) {
-        .logo-text {
-          fill: #ffffff !important;
-        }
-      }
-    </style>
     <clipPath id="nc">
       <circle cx="22" cy="22" r="16" />
     </clipPath>
@@ -27,8 +14,10 @@
   <circle cx="22" cy="22" r="16" fill="none" stroke="#93c5fd" stroke-width="0.5" />
   <ellipse cx="22" cy="22" rx="21" ry="7" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5" />
   <circle cx="43" cy="22" r="3" fill="#16a34a" />
-  <text x="52" y="32" class="logo-text">trace<tspan fill="#16a34a" font-weight="400">.earth</tspan></text>
+  
+  <text x="52" y="32" font-family="Inter, sans-serif" font-size="32" font-weight="500" fill="#94a3b8">trace<tspan fill="#16a34a" font-weight="400">.earth</tspan></text>
 </svg>
+
 
 
 <br />
