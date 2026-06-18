@@ -1,7 +1,5 @@
-import 'dotenv/config';
 import express from 'express';
 import path from 'path';
-import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import { createServer as createViteServer } from 'vite';
 import { prisma } from './src/lib/prisma.js';
 import { calcTotal, calcTransport, calcEnergy, calcDiet, calcShopping } from './src/lib/carbonCalc.js';
@@ -11,56 +9,44 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import session from 'express-session';
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const NAME_PATTERN = /^[a-zA-Z][a-zA-Z\s'.-]{1,79}$/;
-const LOCATION_PATTERN = /^[a-zA-Z][a-zA-Z\s'.-]{1,79}$/;
-const PASSWORD_HASH_PREFIX = 'scrypt$';
-
-const normalizeEmail = (value: unknown) => {
-  return typeof value === 'string' ? value.trim().toLowerCase() : '';
-};
-
-const normalizeText = (value: unknown) => {
-  return typeof value === 'string' ? value.trim().replace(/\s+/g, ' ') : '';
-};
-
-const hashPassword = (password: string) => {
-  const salt = randomBytes(16).toString('hex');
-  const hash = scryptSync(password, salt, 64).toString('hex');
-  return `${PASSWORD_HASH_PREFIX}${salt}$${hash}`;
-};
-
-const verifyPassword = (password: string, storedPassword: string) => {
-  if (!storedPassword) return false;
-
-  if (!storedPassword.startsWith(PASSWORD_HASH_PREFIX)) {
-    return password === storedPassword;
-  }
-
-  const [, salt, hash] = storedPassword.split('$');
-  if (!salt || !hash) return false;
-
-  const storedBuffer = Buffer.from(hash, 'hex');
-  const suppliedBuffer = scryptSync(password, salt, 64);
-
-  return storedBuffer.length === suppliedBuffer.length && timingSafeEqual(storedBuffer, suppliedBuffer);
-};
-
-const validatePassword = (password: unknown) => {
-  if (typeof password !== 'string') return 'Password is required';
-  if (password.length < 8) return 'Password must be at least 8 characters';
-  if (password.length > 128) return 'Password must be 128 characters or less';
-  return null;
-};
-
 async function startServer() {
   const app = express();
-  const PORT = Number(process.env.PORT) || 3000;
-
-  app.set('trust proxy', 1);
+  const PORT = 3000;
 
   // Global Middlewares
   app.use(express.json());
+  // Simple in-memory rate limiter for auth routes
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+
+const rateLimit = (maxRequests: number, windowMs: number) => {
+  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+    const now = Date.now();
+    const record = rateLimitStore.get(ip);
+
+    if (!record || now > record.resetAt) {
+      rateLimitStore.set(ip, { count: 1, resetAt: now + windowMs });
+      return next();
+    }
+
+    if (record.count >= maxRequests) {
+      return res.status(429).json({ error: 'Too many requests. Please try again later.' });
+    }
+
+    record.count++;
+    return next();
+  };
+};
+  app.set('trust proxy', 1);
+  // Security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
+});
 
   // Session middleware
   const SESSION_SECRET = process.env.NEXTAUTH_SECRET || 'some-secure-custom-ambient-secret';
@@ -287,47 +273,24 @@ async function startServer() {
   });
 
   // API 0: REGISTER USER (POST /api/auth/register)
-  app.post('/api/auth/register', async (req, res) => {
-    try {
+app.post('/api/auth/register', rateLimit(5, 60 * 60 * 1000), async (req, res) => {    try {
       const { email, password, name, city, country } = req.body;
-      const emailValue = normalizeEmail(email);
-      const nameValue = normalizeText(name);
-      const cityValue = normalizeText(city);
-      const countryValue = normalizeText(country);
-      const passwordError = validatePassword(password);
-
-      if (!EMAIL_PATTERN.test(emailValue)) {
-        return res.status(400).json({ error: 'Please enter a valid email address' });
+      if (!email || !password || !name) {
+        return res.status(400).json({ error: 'Email, name, and password are required' });
       }
 
-      if (passwordError) {
-        return res.status(400).json({ error: passwordError });
-      }
-
-      if (!NAME_PATTERN.test(nameValue)) {
-        return res.status(400).json({ error: 'Please enter a valid name' });
-      }
-
-      if (!LOCATION_PATTERN.test(cityValue)) {
-        return res.status(400).json({ error: 'Please enter a valid city' });
-      }
-
-      if (!LOCATION_PATTERN.test(countryValue)) {
-        return res.status(400).json({ error: 'Please enter a valid country' });
-      }
-
-      const existingUser = await prisma.user.findUnique({ where: { email: emailValue } });
+      const existingUser = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
       if (existingUser) {
         return res.status(400).json({ error: 'User with this email already exists' });
       }
 
       const user = await prisma.user.create({
         data: {
-          email: emailValue,
-          password: hashPassword(password),
-          name: nameValue,
-          city: cityValue,
-          country: countryValue,
+          email: email.toLowerCase().trim(),
+          password: password,
+          name: name.trim(),
+          city: (city && city.trim()) ? city.trim() : 'New Delhi',
+          country: (country && country.trim()) ? country.trim() : 'India',
         },
       });
 
@@ -339,34 +302,20 @@ async function startServer() {
   });
 
   // API 0.5: LOGIN USER (POST /api/auth/login)
-  app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', rateLimit(10, 15 * 60 * 1000), async (req, res) => {
     try {
       const { email, password } = req.body;
-      const emailValue = normalizeEmail(email);
-      const passwordError = validatePassword(password);
-
-      if (!EMAIL_PATTERN.test(emailValue)) {
-        return res.status(400).json({ error: 'Please enter a valid email address' });
+      if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password are required' });
       }
 
-      if (passwordError) {
-        return res.status(400).json({ error: passwordError });
-      }
-
-      const user = await prisma.user.findUnique({ where: { email: emailValue } });
+      const user = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
       if (!user) {
         return res.status(401).json({ error: 'Invalid email or password' });
       }
 
-      if (!verifyPassword(password, user.password)) {
+      if (user.password !== password) {
         return res.status(401).json({ error: 'Invalid email or password' });
-      }
-
-      if (user.password && !user.password.startsWith(PASSWORD_HASH_PREFIX)) {
-        await prisma.user.update({
-          where: { email: emailValue },
-          data: { password: hashPassword(password) },
-        });
       }
 
       return res.json({ success: true, user });
@@ -501,16 +450,14 @@ async function startServer() {
       if (logs.length > 0) {
         consecutiveDays = 1;
         // Examine days backward
-        const dates: number[] = logs.map((l): number => {
+        const dates = logs.map((l) => {
           const d = new Date(l.date);
           return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
         });
-        const uniqueDates: number[] = Array.from(new Set<number>(dates)).sort((a, b) => b - a); // descending order
+        const uniqueDates = Array.from(new Set(dates)).sort((a, b) => b - a); // descending order
 
         for (let i = 0; i < uniqueDates.length - 1; i++) {
-          const currentDate = uniqueDates[i] ?? 0;
-          const previousDate = uniqueDates[i + 1] ?? currentDate;
-          const diffTime = Math.abs(currentDate - previousDate);
+          const diffTime = Math.abs(uniqueDates[i] - uniqueDates[i + 1]);
           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
           if (diffDays === 1) {
             consecutiveDays++;

@@ -1,6 +1,0 @@
-{
-  "name": "trace-earth",
-  "description": "An elegant and production-ready Carbon Footprint Awareness Platform with real-time calculations and Gemini insights.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
