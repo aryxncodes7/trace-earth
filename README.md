@@ -18,7 +18,6 @@
 **Track your carbon footprint. Understand your impact. Act today.**
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-trace--earth.onrender.com-16a34a?style=flat-square)](https://trace-earth.onrender.com)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 [![Built with](https://img.shields.io/badge/Built%20with-React%20%2B%20Express-orange?style=flat-square)](https://react.dev)
 [![AI Powered](https://img.shields.io/badge/AI-Gemini%201.5%20Flash-purple?style=flat-square)](https://ai.google.dev)
 
@@ -28,7 +27,7 @@
 
 ## What is trace.earth?
 
-trace.earth is a personal carbon footprint awareness platform that helps individuals track, understand, and reduce their daily CO₂ emissions. Most carbon calculators are either too complex for everyday use or too vague to be meaningful. trace.earth sits in the middle — accurate enough to matter, simple enough to use every day.
+trace.earth is a personal carbon footprint awareness platform that helps individuals track, understand, and reduce their daily CO₂ emissions. Most carbon calculators are either too complex for everyday use or too vague to be meaningful. trace.earth sits in the middle - accurate enough to matter, simple enough to use every day.
 
 Users log their daily activities across transport, energy, diet, and shopping. The platform calculates real CO₂ emissions using IPCC-verified emission factors, visualizes trends over time, and uses Gemini AI to generate personalized, actionable reduction tips based on each user's highest-impact category.
 
@@ -36,18 +35,18 @@ Users log their daily activities across transport, energy, diet, and shopping. T
 
 ## Features
 
-- **Cinematic splash screen** — animated Earth globe with live global CO₂ counter on first visit
-- **Daily activity logger** — multi-step form covering transport, home energy, diet, and shopping
-- **Real-time CO₂ calculation** — IPCC-standard emission factors, updates as you type
-- **Personal dashboard** — score ring, weekly trend chart, category breakdown, streak counter
-- **AI environmental coach** — Gemini 1.5 Flash generates personalized 2-sentence tips, cached 24h
-- **Monthly heatmap** — GitHub-style calendar showing emission patterns over time
-- **Global leaderboard** — ranked by daily average CO₂, with anonymous mode toggle
-- **Carbon offset marketplace** — browse real offset programs with Gold Standard / VCS certification
-- **OAuth authentication** — sign in with Google or GitHub, or continue as guest
-- **CSV data export** — download your full emission history
-- **Dark mode** — full dark/light theme support
-- **Mobile responsive** — bottom tab navigation on mobile, works on all screen sizes
+- **Cinematic splash screen** - animated Earth globe with live global CO₂ counter on first visit
+- **Daily activity logger** - multi-step form covering transport, home energy, diet, and shopping
+- **Real-time CO₂ calculation** - IPCC-standard emission factors, updates as you type
+- **Personal dashboard** - score ring, weekly trend chart, category breakdown, streak counter
+- **AI environmental coach** - Gemini 1.5 Flash generates personalized 2-sentence tips, cached 24h
+- **Monthly heatmap** - GitHub-style calendar showing emission patterns over time
+- **Global leaderboard** - ranked by daily average CO₂, with anonymous mode toggle
+- **Carbon offset marketplace** - browse real offset programs with Gold Standard / VCS certification
+- **OAuth authentication** - sign in with Google or GitHub, or continue as guest
+- **CSV data export** - download your full emission history
+- **Dark mode** - full dark/light theme support
+- **Mobile responsive** - bottom tab navigation on mobile, works on all screen sizes
 
 ---
 
@@ -116,25 +115,36 @@ Streaming: 0.036 kg per hour
 
 ### Local setup
 
-```bash
+
 # Clone the repository
+```
 git clone https://github.com/aryxncodes7/trace-earth.git
 cd trace-earth
+```
 
 # Install dependencies
+```
 npm install
+```
 
 # Copy environment variables
+```
 cp .env.example .env
+```
 # Fill in your values in .env
 
 # Run database migrations
+```
 npx prisma migrate dev
+```
 
 # Seed with demo data
+```
 npx prisma db seed
+```
 
 # Start development server
+```
 npm run dev
 ```
 
@@ -217,11 +227,11 @@ trace-earth/
 
 ---
 
-## Built for PromptWars Virtual — Challenge 3
+## Built for PromptWars Virtual - Challenge 3
 
 > "Create a digital solution that helps individuals track, understand, and reduce their personal carbon emissions."
 
-trace.earth was built as a competition entry for PromptWars Virtual, Challenge 3: Carbon Footprint Awareness Platform. The goal was to move beyond basic carbon calculators and build something people would actually use — a product that feels personal, looks professional, and makes the data actionable.
+trace.earth was built as a competition entry for PromptWars Virtual, Challenge 3: Carbon Footprint Awareness Platform. The goal was to move beyond basic carbon calculators and build something people would actually use - a product that feels personal, looks professional, and makes the data actionable.
 
 ---
 
