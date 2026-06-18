@@ -1,0 +1,12 @@
+name: Keep Website Alive
+
+on:
+  schedule:
+    - cron: '*/12 * * * *' # Runs every 12 minutes
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render App
+        run: curl -I https://trace-earth.onrender.com/
