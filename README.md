@@ -192,13 +192,22 @@ https://your-domain.com/api/auth/github/callback
 6. Deploy
 
 ---
-
 ## Project structure
 
 ```
 trace-earth/
+├── prisma/
+│   ├── migrations/             # Database migration history
+│   ├── dev.db                  # Local development database
+│   ├── schema.prisma           # Prisma database schema
+│   └── seed.ts                 # Demo data seeder script
+├── public/
+│   └── favicon.svg             # Application logo / asset
 ├── src/
-│   ├── app/                    # Page components
+│   ├── app/
+│   │   └── api/
+│   │       └── auth/
+│   │           └── [...nextauth]/ # Auth API route handlers
 │   ├── components/             # Reusable UI components
 │   │   ├── ActivityForm.tsx    # Multi-step emission logger
 │   │   ├── AIInsightCard.tsx   # Gemini AI coaching card
@@ -215,16 +224,17 @@ trace-earth/
 │   │   ├── carbonCalc.ts       # IPCC emission factor engine
 │   │   ├── gemini.ts           # Gemini AI integration
 │   │   └── prisma.ts           # Database client
-│   └── store/
-│       └── useStore.ts         # Zustand global state
-├── prisma/
-│   ├── schema.prisma           # Database schema
-│   └── seed.ts                 # Demo data seeder
-├── server.ts                   # Express API server
-├── vite.config.ts
-└── package.json
+│   ├── store/
+│   │   └── useStore.ts         # Zustand global state
+│   ├── tests/                  # Application test suites
+│   ├── App.tsx                 # Main application component
+│   ├── index.css               # Global Tailwind CSS configurations
+│   └── main.tsx                # Client-side mounting entrypoint
+├── server.ts                   # Express API server configuration
+├── index.html                  # HTML entry template
+├── vite.config.ts              # Vite bundle configuration
+└── package.json                # Project dependencies and script targets
 ```
-
 ---
 
 ## Built for PromptWars Virtual - Challenge 3
