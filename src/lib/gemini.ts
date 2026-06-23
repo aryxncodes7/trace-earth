@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI } from '@google/generativeai';
 
 // Initialize full-stack Gemini client using backend credentials with proper User-Agent header
 const ai = new GoogleGenAI({
