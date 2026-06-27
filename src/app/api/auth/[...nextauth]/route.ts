@@ -2,18 +2,22 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 
+if (!process.env.NEXTAUTH_SECRET) {
+  console.warn("NEXTAUTH_SECRET is not set. NextAuth will likely fail in production.");
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
     GithubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID || "",
-      clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET || "supersecretnextauthsessionkey",
+  secret: process.env.NEXTAUTH_SECRET,
   // Ensure NEXTAUTH_URL is configured/verified
   pages: {
     signIn: "/",
@@ -21,11 +25,24 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (!user || !account) {
-        console.error("Server-side auth failure during signIn callback: Missing user or account data.");
+      if (!user?.email || !account?.providerAccountId) {
+        console.error("Server-side auth failure during signIn callback: Missing essential user or account data.");
         return false;
       }
       return true;
+    },
+    async jwt({ token, account }) {
+      if (account) {
+        token.provider = account.provider;
+        token.providerAccountId = account.providerAccountId;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token && session.user) {
+        (session.user as any).id = token.sub || token.providerAccountId;
+      }
+      return session;
     },
   },
   events: {

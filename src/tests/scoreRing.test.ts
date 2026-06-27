@@ -2,19 +2,23 @@ import { describe, it, expect } from 'vitest';
 
 // Score ring threshold logic extracted for testing
 function getScoreLabel(score: number): string {
+  if (isNaN(score) || score == null) return 'Unknown footprint';
   if (score < 8.0) return 'Pretty good';
   if (score <= 13.0) return 'Moderate footprint';
   return 'High impact day';
 }
 
 function getScoreColor(score: number): string {
+  if (isNaN(score) || score == null) return 'gray';
   if (score < 8.0) return 'green';
   if (score <= 13.0) return 'amber';
   return 'red';
 }
 
 function getFillPercentage(score: number, maxCap = 20.0): number {
-  return Math.min(score / maxCap, 1) * 100;
+  if (isNaN(score) || score == null || score < 0) return 0;
+  if (maxCap <= 0) return 100;
+  return Math.max(0, Math.min(score / maxCap, 1) * 100);
 }
 
 describe('ScoreRing thresholds', () => {
@@ -35,4 +39,39 @@ describe('ScoreRing fill percentage', () => {
   it('returns 100% for score at cap', () => { expect(getFillPercentage(20)).toBe(100); });
   it('caps at 100% for score above cap', () => { expect(getFillPercentage(30)).toBe(100); });
   it('returns 25% for 5kg', () => { expect(getFillPercentage(5)).toBe(25); });
+});
+
+describe('ScoreRing edge cases and invalid inputs', () => {
+  it('handles negative scores gracefully', () => {
+    expect(getScoreColor(-5)).toBe('green');
+    expect(getScoreLabel(-5)).toBe('Pretty good');
+    expect(getFillPercentage(-10)).toBe(0); // Cannot have negative fill
+  });
+  
+  it('handles null or undefined values', () => {
+    // @ts-ignore
+    expect(getScoreColor(null)).toBe('gray');
+    // @ts-ignore
+    expect(getScoreColor(undefined)).toBe('gray');
+    // @ts-ignore
+    expect(getScoreLabel(null)).toBe('Unknown footprint');
+    // @ts-ignore
+    expect(getFillPercentage(null)).toBe(0);
+  });
+
+  it('handles NaN gracefully', () => {
+    expect(getScoreColor(NaN)).toBe('gray');
+    expect(getScoreLabel(NaN)).toBe('Unknown footprint');
+    expect(getFillPercentage(NaN)).toBe(0);
+  });
+  
+  it('handles infinity', () => {
+    expect(getScoreColor(Infinity)).toBe('red');
+    expect(getScoreLabel(Infinity)).toBe('High impact day');
+    expect(getFillPercentage(Infinity)).toBe(100);
+  });
+  
+  it('handles zero cap in getFillPercentage to avoid division by zero', () => {
+    expect(getFillPercentage(10, 0)).toBe(100);
+  });
 });

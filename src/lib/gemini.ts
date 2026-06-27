@@ -25,11 +25,25 @@ export interface InsightOptions {
 export async function getPersonalizedInsight(options: InsightOptions): Promise<string> {
   const { totalKg, highestCategory, highestVal } = options;
 
+  // Input Validation & Sanitize Against Prompt Injection
+  if (typeof totalKg !== 'number' || isNaN(totalKg) || totalKg < 0) {
+    throw new Error('Invalid totalKg: must be a positive number.');
+  }
+  if (typeof highestVal !== 'number' || isNaN(highestVal) || highestVal < 0) {
+    throw new Error('Invalid highestVal: must be a positive number.');
+  }
+  
+  // Allow only alphanumeric characters and spaces for highestCategory to prevent prompt injection
+  const sanitizedCategory = String(highestCategory).replace(/[^a-zA-Z0-9\s]/g, '').trim();
+  if (!sanitizedCategory) {
+    throw new Error('Invalid highestCategory: must contain alphanumeric characters.');
+  }
+
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3.5-flash',
       contents: `My total emissions for today are ${totalKg.toFixed(1)} kg CO2.
-My highest category of emissions is "${highestCategory}" at ${highestVal.toFixed(1)} kg CO2.
+My highest category of emissions is "${sanitizedCategory}" at ${highestVal.toFixed(1)} kg CO2.
 Provide my coaching recommendation.`,
       config: {
         systemInstruction: 'You are an environmental coach. Give short, specific, non-preachy advice. Always suggest one concrete action the user can take today. Max 2 sentences.',
