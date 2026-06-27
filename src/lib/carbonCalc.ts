@@ -38,85 +38,97 @@ export const EMISSION_FACTORS = {
   },
 };
 
-export interface TransportInput {
-  mode: 'petrolCar' | 'dieselCar' | 'ev' | 'bus' | 'metro' | 'flight' | 'none';
-  distance: number; // km
-}
+import { z } from 'zod';
 
-export interface EnergyInput {
-  kwh: number;
-  source: 'grid' | 'mixed' | 'renewable';
-  acHours?: number; // Optional metadata
-}
+export const transportSchema = z.object({
+  mode: z.enum(['petrolCar', 'dieselCar', 'ev', 'bus', 'metro', 'flight', 'none']).catch('none'),
+  distance: z.coerce.number().min(0).catch(0),
+});
+export type TransportInput = z.infer<typeof transportSchema>;
 
-export interface DietInput {
-  type: 'meatHeavy' | 'omnivore' | 'vegetarian' | 'vegan';
-  mealsCount: number; // usually 3
-  waste: 'none' | 'some' | 'lots';
-}
+export const energySchema = z.object({
+  kwh: z.coerce.number().min(0).catch(0),
+  source: z.enum(['grid', 'mixed', 'renewable']).catch('grid'),
+  acHours: z.coerce.number().optional(),
+});
+export type EnergyInput = z.infer<typeof energySchema>;
 
-export interface ShoppingInput {
-  onlineOrders: number;
-  clothingItems: number;
-  streamingHours: number;
-}
+export const dietSchema = z.object({
+  type: z.enum(['meatHeavy', 'omnivore', 'vegetarian', 'vegan']).catch('omnivore'),
+  mealsCount: z.coerce.number().min(0).catch(0),
+  waste: z.enum(['none', 'some', 'lots']).catch('some'),
+});
+export type DietInput = z.infer<typeof dietSchema>;
 
-export interface LogInput {
-  transport: TransportInput;
-  energy: EnergyInput;
-  diet: DietInput;
-  shopping: ShoppingInput;
-}
+export const shoppingSchema = z.object({
+  onlineOrders: z.coerce.number().min(0).catch(0),
+  clothingItems: z.coerce.number().min(0).catch(0),
+  streamingHours: z.coerce.number().min(0).catch(0),
+});
+export type ShoppingInput = z.infer<typeof shoppingSchema>;
+
+export const logInputSchema = z.object({
+  transport: transportSchema.catch({ mode: 'none', distance: 0 }),
+  energy: energySchema.catch({ kwh: 0, source: 'grid' }),
+  diet: dietSchema.catch({ type: 'omnivore', mealsCount: 0, waste: 'some' }),
+  shopping: shoppingSchema.catch({ onlineOrders: 0, clothingItems: 0, streamingHours: 0 }),
+});
+export type LogInput = z.infer<typeof logInputSchema>;
 
 /**
  * Calculates carbon footprint for transport
  */
-export function calcTransport(input: TransportInput): number {
-  const factor = EMISSION_FACTORS.transport[input.mode] || 0;
-  return Number((input.distance * factor).toFixed(2));
+export function calcTransport(input: any): number {
+  const data = transportSchema.parse(input || {});
+  const factor = EMISSION_FACTORS.transport[data.mode] || 0;
+  return Number((data.distance * factor).toFixed(2));
 }
 
 /**
  * Calculates carbon footprint for energy
  */
-export function calcEnergy(input: EnergyInput): number {
-  const factor = EMISSION_FACTORS.energy[input.source] || 0;
-  return Number((input.kwh * factor).toFixed(2));
+export function calcEnergy(input: any): number {
+  const data = energySchema.parse(input || {});
+  const factor = EMISSION_FACTORS.energy[data.source] || 0;
+  return Number((data.kwh * factor).toFixed(2));
 }
 
 /**
  * Calculates carbon footprint for diet
  */
-export function calcDiet(input: DietInput): number {
-  const factor = EMISSION_FACTORS.diet[input.type] || 0;
-  const multiplier = EMISSION_FACTORS.foodWaste[input.waste] || 1.0;
-  return Number((input.mealsCount * factor * multiplier).toFixed(2));
+export function calcDiet(input: any): number {
+  const data = dietSchema.parse(input || {});
+  const factor = EMISSION_FACTORS.diet[data.type] || 0;
+  const multiplier = EMISSION_FACTORS.foodWaste[data.waste] || 1.0;
+  return Number((data.mealsCount * factor * multiplier).toFixed(2));
 }
 
 /**
  * Calculates carbon footprint for shopping & streaming
  */
-export function calcShopping(input: ShoppingInput): number {
-  const orderKg = input.onlineOrders * EMISSION_FACTORS.shopping.onlineOrder;
-  const clothesKg = input.clothingItems * EMISSION_FACTORS.shopping.clothingItem;
-  const streamingKg = input.streamingHours * EMISSION_FACTORS.streaming.perHour;
+export function calcShopping(input: any): number {
+  const data = shoppingSchema.parse(input || {});
+  const orderKg = data.onlineOrders * EMISSION_FACTORS.shopping.onlineOrder;
+  const clothesKg = data.clothingItems * EMISSION_FACTORS.shopping.clothingItem;
+  const streamingKg = data.streamingHours * EMISSION_FACTORS.streaming.perHour;
   return Number((orderKg + clothesKg + streamingKg).toFixed(2));
 }
 
 /**
  * Calculates total footprint
  */
-export function calcTotal(input: LogInput): {
+export function calcTotal(input: any): {
   transportKg: number;
   energyKg: number;
   dietKg: number;
   shoppingKg: number;
   totalKg: number;
 } {
-  const transportKg = calcTransport(input.transport);
-  const energyKg = calcEnergy(input.energy);
-  const dietKg = calcDiet(input.diet);
-  const shoppingKg = calcShopping(input.shopping);
+  const data = logInputSchema.parse(input || {});
+  const transportKg = calcTransport(data.transport);
+  const energyKg = calcEnergy(data.energy);
+  const dietKg = calcDiet(data.diet);
+  const shoppingKg = calcShopping(data.shopping);
   const totalKg = Number((transportKg + energyKg + dietKg + shoppingKg).toFixed(2));
 
   return {

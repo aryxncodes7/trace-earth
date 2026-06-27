@@ -38,10 +38,9 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
-      if (token && session.user) {
-        (session.user as any).id = token.sub || token.providerAccountId;
-      }
+    async session({ session }) {
+      // Ensure we only expose safe fields (name, email, image) 
+      // and do not attach internal database IDs or sensitive tokens to the client session object.
       return session;
     },
   },

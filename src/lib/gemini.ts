@@ -1,15 +1,5 @@
 import { GoogleGenAI } from '@google/generativeai';
 
-// Initialize full-stack Gemini client using backend credentials with proper User-Agent header
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  httpOptions: {
-    headers: {
-      'User-Agent': 'aistudio-build',
-    },
-  },
-});
-
 /**
  * Interface for the insight generator options
  */
@@ -40,6 +30,19 @@ export async function getPersonalizedInsight(options: InsightOptions): Promise<s
   }
 
   try {
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not configured in the environment.");
+    }
+    
+    const ai = new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        },
+      },
+    } as any); // using as any in case the typed constructor doesn't accept this object
+
     const response = await ai.models.generateContent({
       model: 'gemini-3.5-flash',
       contents: `My total emissions for today are ${totalKg.toFixed(1)} kg CO2.
