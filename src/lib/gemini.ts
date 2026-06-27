@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/generativeai';
+import { GoogleGenAI } from '@google/genai';
 
 /**
  * Interface for the insight generator options
